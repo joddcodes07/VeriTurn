@@ -1,0 +1,18 @@
+# Python Virtual Environment (DO NOT UPLOAD THIS)
+venv/
+env/
+
+# Python Cache Files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment Variables (Keep your secrets safe later)
+.env
+
+# macOS System Files
+.DS_Store
+
+# (Optional) If you add a database file later, ignore it so you don't overwrite it on GitHub
+*.sqlite3
