@@ -84,7 +84,7 @@
 
 ## 14. Team Roles & Responsibilities
 * **Mehran Ansari** | ML/Backend Developer | Model training, API creation, Python logic.
-* **Yashpal Singh** | Frontend Developer | UI/UX design, JavaScript integration.
+* **Yashpal Singh** | Synthetic data generation | Data implementation in the application.
 * **Naman Katyal** | Frontend Developer | UI/UX design, JavaScript integration.
 
 ## 15. Future Scope & Scalability
