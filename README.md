@@ -83,8 +83,9 @@
 * [ ] Final Demo
 
 ## 14. Team Roles & Responsibilities
-* **[Your Name]** | ML/Backend Developer | Model training, API creation, Python logic.
-* **[Teammate Name]** | Frontend Developer | UI/UX design, JavaScript integration.
+* **Mehran Ansari** | ML/Backend Developer | Model training, API creation, Python logic.
+* **Yashpal Singh** | Frontend Developer | UI/UX design, JavaScript integration.
+* **Naman Katyal** | Frontend Developer | UI/UX design, JavaScript integration.
 
 ## 15. Future Scope & Scalability
 * **Short-Term:** Integrate an LLM to generate highly conversational, plain-English summaries of the fraud risk.
