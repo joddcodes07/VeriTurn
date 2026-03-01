@@ -82,7 +82,7 @@ function setupUploadForm() {
         formData.append("file", file);
 
         try {
-            // FIXED: Added '/upload' to ensure request hits the correct backend route
+            // UPDATED: Ensuring the path exactly matches your working Render primary URL
             const response = await fetch("https://veriturn.onrender.com/upload", { 
                 method: "POST", 
                 body: formData 
@@ -127,12 +127,14 @@ function initializeDashboard(backendData) {
 }
 
 function renderCharts(charts) {
-    const baseUrl = "https://veriturn-backend.onrender.com/"; 
+    // FIXED: Synchronized with your working primary Render URL to fix broken images
+    const baseUrl = "https://veriturn.onrender.com/"; 
     const timestamp = Date.now();
     const scatterContainer = document.getElementById('scatterChart');
     const barContainer = document.getElementById('barChart');
 
     if (scatterContainer && charts.cluster_scatter) {
+        // Cache busting with timestamp ensures the latest graph is always pulled
         scatterContainer.innerHTML = `<img src="${baseUrl}${charts.cluster_scatter}?t=${timestamp}" style="width:100%; height:100%; object-fit:contain; border-radius:8px;" alt="Anomaly Clusters" />`;
     }
     if (barContainer && charts.risk_level) {

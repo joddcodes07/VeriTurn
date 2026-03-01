@@ -1,14 +1,11 @@
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 import pandas as pd
 import os
 import model
 
-# ==================================================
-# RENDER/DEPLOYMENT FIX: MATPLOTLIB & FONTS
-# ==================================================
 import matplotlib
-# Forces Matplotlib to use a writable temporary directory for font caching
+
 os.environ['MPLCONFIGDIR'] = "/tmp/matplotlib_cache" 
 matplotlib.use('Agg') # Headless mode for server
 import matplotlib.pyplot as plt
@@ -17,8 +14,6 @@ from sklearn.cluster import KMeans
 
 app = Flask(__name__)
 
-# --- REINFORCED CORS FOR VERCEL DEPLOYMENT ---
-# Explicitly allowing common methods and headers used by browsers
 CORS(app, resources={r"/*": {
     "origins": "*",
     "methods": ["POST", "GET", "OPTIONS"],
@@ -31,6 +26,11 @@ STATIC_FOLDER = "static/charts"
 # Create directories with write permissions
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(STATIC_FOLDER, exist_ok=True)
+
+# ADDED: Explicit route to serve generated chart images to the frontend
+@app.route('/static/charts/<path:filename>')
+def serve_charts(filename):
+    return send_from_directory(STATIC_FOLDER, filename)
 
 def generate_charts(df):
     """Generates and saves behavioral analysis charts as static PNGs."""
@@ -48,10 +48,10 @@ def generate_charts(df):
         plt.ylabel("Total Return Value (₹)")
         plt.title("Customer Behaviour Clusters")
 
-        path = f"{STATIC_FOLDER}/cluster_scatter.png"
-        plt.savefig(path)
+        path = f"cluster_scatter.png" # Path relative to STATIC_FOLDER
+        plt.savefig(os.path.join(STATIC_FOLDER, path))
         plt.close()
-        charts["cluster_scatter"] = path
+        charts["cluster_scatter"] = f"static/charts/{path}"
 
     # 2. Purchase Value Distribution
     plt.figure(figsize=(8,6))
@@ -59,10 +59,10 @@ def generate_charts(df):
     plt.title("Purchase Value Distribution")
     plt.xlabel("Total Purchase Value (₹)")
 
-    path = f"{STATIC_FOLDER}/purchase_value.png"
-    plt.savefig(path)
+    path = f"purchase_value.png"
+    plt.savefig(os.path.join(STATIC_FOLDER, path))
     plt.close()
-    charts["purchase_value"] = path
+    charts["purchase_value"] = f"static/charts/{path}"
 
     # 3. Risk Level Pie Chart
     counts = df["risk_level"].value_counts()
@@ -70,17 +70,16 @@ def generate_charts(df):
     plt.pie(counts, labels=counts.index, autopct="%1.1f%%")
     plt.title("Risk Level Distribution")
 
-    path = f"{STATIC_FOLDER}/risk_level.png"
-    plt.savefig(path)
+    path = f"risk_level.png"
+    plt.savefig(os.path.join(STATIC_FOLDER, path))
     plt.close()
-    charts["risk_level"] = path
+    charts["risk_level"] = f"static/charts/{path}"
 
     return charts
 
 @app.route("/upload", methods=["POST", "OPTIONS"])
 def upload_file():
     """Handles CSV ingestion, AI processing, and metric generation."""
-    # Handle the browser's security preflight request to stop CORS blocks
     if request.method == "OPTIONS":
         return jsonify({"status": "ok"}), 200
 
