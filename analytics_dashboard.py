@@ -14,7 +14,10 @@ from sklearn.cluster import KMeans
 # ==================================================
 
 app = Flask(__name__)
-CORS(app)
+
+# --- CRITICAL CORS FIX FOR DEPLOYMENT ---
+# Allows your Vercel frontend to communicate with Render
+CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
 
 UPLOAD_FOLDER = "uploads"
 STATIC_FOLDER = "static/charts"
@@ -66,8 +69,12 @@ def generate_charts(df):
 
     return charts
 
-@app.route("/upload", methods=["POST"])
+@app.route("/upload", methods=["POST", "OPTIONS"])
 def upload_file():
+    # Handle Browser Preflight requests
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
+
     # 1. Save raw file
     file = request.files["file"]
     input_filepath = os.path.join(UPLOAD_FOLDER, "input.csv")
@@ -93,7 +100,6 @@ def upload_file():
     high_risk_df = df[df["risk_level"] == "High"]
     monthly_est_loss = float(high_risk_df["total_return_value"].sum()) / months_count
     
-    # Check for correct column naming for total returns
     total_col = "total_total_return_count" if "total_total_return_count" in df.columns else "total_return_count"
     monthly_total_returns = int(df[total_col].sum() / months_count)
 
@@ -104,36 +110,27 @@ def upload_file():
         "preventable_loss": monthly_est_loss * 0.85 
     }
     
-    # 6. Flagged Intelligence Report Data with ALL Customers & NEW USP
-    # Sorted by risk score, including ALL flagged customers (no .head() limit)
+    # 6. Flagged Intelligence Report Data
     top_frauds = df[df["risk_level"] == "High"].sort_values("risk_score", ascending=False)
     table_data = []
     
     for _, row in top_frauds.iterrows():
         # --- REASONING ENGINE ---
         reasons = []
-        if row["return_ratio"] >= 0.9:
-            reasons.append("Critical return frequency.")
-        elif row["return_ratio"] > 0.7:
-            reasons.append("High return volume.")
+        if row["return_ratio"] >= 0.9: reasons.append("Critical return frequency.")
+        elif row["return_ratio"] > 0.7: reasons.append("High return volume.")
 
-        if row["avg_return_days"] <= 1:
-            reasons.append("Immediate return cycle detected.")
-        elif row["avg_return_days"] < 3:
-            reasons.append("Short-term return pattern.")
+        if row["avg_return_days"] <= 1: reasons.append("Immediate return cycle detected.")
+        elif row["avg_return_days"] < 3: reasons.append("Short-term return pattern.")
 
-        if row["damage_ratio"] > 0.8:
-            reasons.append("Severe financial impact.")
-        elif row["damage_ratio"] > 0.5:
-            reasons.append("Significant revenue loss.")
+        if row["damage_ratio"] > 0.8: reasons.append("Severe financial impact.")
+        elif row["damage_ratio"] > 0.5: reasons.append("Significant revenue loss.")
         
         final_reasons = reasons[:2] 
         ai_justification = " | ".join(final_reasons) if final_reasons else "Pattern matches known fraud profile."
 
-        # --- REFINED USP POLICY: NEXT PURCHASE RECOMMENDATION ---
-        # Providing a policy recommendation instead of a fixed calculation
+        # --- USP POLICY: NEXT PURCHASE RECOMMENDATION ---
         policy_recommendation = "Apply 5% Risk Premium surcharge on next transaction value."
-        # --------------------------------------------------------
 
         table_data.append({
             "id": str(row.get("customer_id", "Unknown")),
@@ -142,7 +139,7 @@ def upload_file():
             "score": int(row.get('risk_score', 0)),
             "status": "Flagged",
             "reason": ai_justification,
-            "usp_policy": policy_recommendation # Dynamic policy recommendation
+            "usp_policy": policy_recommendation 
         })
 
     return jsonify({
@@ -160,4 +157,5 @@ def download_report():
         return jsonify({"error": "No report found."}), 404
 
 if __name__ == "__main__":
+    # Note: Production uses Gunicorn, but keep this for local testing
     app.run(debug=True, port=5000)
