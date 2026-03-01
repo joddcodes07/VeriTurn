@@ -83,7 +83,7 @@ function setupUploadForm() {
 
         try {
             // FIXED: Added '/upload' to ensure request hits the correct backend route
-            const response = await fetch("https://veriturn-backend.onrender.com/upload", { 
+            const response = await fetch("https://veriturn.onrender.com/upload", { 
                 method: "POST", 
                 body: formData 
             });

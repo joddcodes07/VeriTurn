@@ -5,24 +5,30 @@ import os
 import model
 
 # ==================================================
-# MAC/BACKGROUND MATPLOTLIB FIX 
+# RENDER/DEPLOYMENT FIX: MATPLOTLIB & FONTS
 # ==================================================
 import matplotlib
-matplotlib.use('Agg') # Essential for headless server deployment
+# Forces Matplotlib to use a writable temporary directory for font caching
+os.environ['MPLCONFIGDIR'] = "/tmp/matplotlib_cache" 
+matplotlib.use('Agg') # Headless mode for server
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 # ==================================================
 
 app = Flask(__name__)
 
-# --- CRITICAL CORS FIX FOR DEPLOYMENT ---
-# Explicitly allowing your Vercel frontend to talk to this Render backend
-CORS(app, resources={r"/*": {"origins": "*"}}, supports_credentials=True)
+# --- REINFORCED CORS FOR VERCEL DEPLOYMENT ---
+# Explicitly allowing common methods and headers used by browsers
+CORS(app, resources={r"/*": {
+    "origins": "*",
+    "methods": ["POST", "GET", "OPTIONS"],
+    "allow_headers": ["Content-Type", "Authorization"]
+}}, supports_credentials=True)
 
 UPLOAD_FOLDER = "uploads"
 STATIC_FOLDER = "static/charts"
 
-# Ensure directories exist for data and generated assets
+# Create directories with write permissions
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(STATIC_FOLDER, exist_ok=True)
 
@@ -74,7 +80,7 @@ def generate_charts(df):
 @app.route("/upload", methods=["POST", "OPTIONS"])
 def upload_file():
     """Handles CSV ingestion, AI processing, and metric generation."""
-    # Handle the browser's security preflight request
+    # Handle the browser's security preflight request to stop CORS blocks
     if request.method == "OPTIONS":
         return jsonify({"status": "ok"}), 200
 
@@ -94,7 +100,6 @@ def upload_file():
     df = pd.read_csv(output_filepath)
     
     # --- CALCULATE MONTHLY SCALE FACTOR ---
-    # Normalizes metrics based on the date range provided in the CSV
     raw_df = pd.read_csv(input_filepath)
     raw_df['purchase_date'] = pd.to_datetime(raw_df['purchase_date'])
     days_span = (raw_df['purchase_date'].max() - raw_df['purchase_date'].min()).days
@@ -117,12 +122,11 @@ def upload_file():
         "preventable_loss": monthly_est_loss * 0.85 
     }
     
-    # 6. Flagged Intelligence Report (Full List)
+    # 6. Flagged Intelligence Report Data
     top_frauds = df[df["risk_level"] == "High"].sort_values("risk_score", ascending=False)
     table_data = []
     
     for _, row in top_frauds.iterrows():
-        # --- BEHAVIORAL REASONING ENGINE ---
         reasons = []
         if row["return_ratio"] >= 0.9: reasons.append("Critical return frequency.")
         elif row["return_ratio"] > 0.7: reasons.append("High return volume.")
@@ -130,8 +134,6 @@ def upload_file():
         elif row["avg_return_days"] < 3: reasons.append("Short-term return pattern.")
         
         ai_justification = " | ".join(reasons[:2]) if reasons else "Pattern matches known fraud profile."
-        
-        # --- VERITURN USP POLICY RECOMMENDATION ---
         policy_recommendation = "Apply 5% Risk Premium surcharge on next transaction value."
 
         table_data.append({
