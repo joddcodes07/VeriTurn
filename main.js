@@ -1,7 +1,9 @@
 import './style.css'
 
+// Global state for full table data storage
 let currentTableData = [];
 
+// Basic Router to handle views
 class Router {
     constructor() {
         this.currentView = 'landing';
@@ -80,8 +82,12 @@ function setupUploadForm() {
         formData.append("file", file);
 
         try {
-            // Updated to Production URL
-            const response = await fetch("https://veriturn-backend.onrender.com", { method: "POST", body: formData });
+            // FIXED: Added '/upload' to ensure request hits the correct backend route
+            const response = await fetch("https://veriturn-backend.onrender.com/upload", { 
+                method: "POST", 
+                body: formData 
+            });
+            
             if (!response.ok) throw new Error("Backend processing failed.");
             const result = await response.json();
             
@@ -92,7 +98,7 @@ function setupUploadForm() {
             initializeDashboard(result);
         } catch (error) {
             console.error("Upload Error:", error);
-            alert("Failed to connect to VeriTurn Cloud. Please check your internet connection.");
+            alert("Failed to connect to VeriTurn Cloud. Please check your internet connection and verify the backend is running.");
             btnText.textContent = 'Generate AI Dashboard';
             loader.classList.add('hidden');
         }
@@ -121,7 +127,6 @@ function initializeDashboard(backendData) {
 }
 
 function renderCharts(charts) {
-    // FIXED: Changed to Production URL to fetch live images
     const baseUrl = "https://veriturn-backend.onrender.com/"; 
     const timestamp = Date.now();
     const scatterContainer = document.getElementById('scatterChart');
