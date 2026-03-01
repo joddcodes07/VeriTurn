@@ -81,7 +81,7 @@ function setupUploadForm() {
 
         try {
             // Updated to Production URL
-            const response = await fetch("https://veriturn-backend.onrender.com/upload", { method: "POST", body: formData });
+            const response = await fetch("https://veriturn-backend.onrender.com", { method: "POST", body: formData });
             if (!response.ok) throw new Error("Backend processing failed.");
             const result = await response.json();
             
