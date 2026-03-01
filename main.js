@@ -1,9 +1,7 @@
 import './style.css'
 
-// Global state for full table data storage
 let currentTableData = [];
 
-// Basic Router to handle views
 class Router {
     constructor() {
         this.currentView = 'landing';
@@ -82,7 +80,8 @@ function setupUploadForm() {
         formData.append("file", file);
 
         try {
-            const response = await fetch("http://127.0.0.1:5000/upload", { method: "POST", body: formData });
+            // Updated to Production URL
+            const response = await fetch("https://veriturn-backend.onrender.com/upload", { method: "POST", body: formData });
             if (!response.ok) throw new Error("Backend processing failed.");
             const result = await response.json();
             
@@ -93,7 +92,7 @@ function setupUploadForm() {
             initializeDashboard(result);
         } catch (error) {
             console.error("Upload Error:", error);
-            alert("Failed to connect to Backend. Ensure Flask is running on port 5000.");
+            alert("Failed to connect to VeriTurn Cloud. Please check your internet connection.");
             btnText.textContent = 'Generate AI Dashboard';
             loader.classList.add('hidden');
         }
@@ -103,13 +102,11 @@ function setupUploadForm() {
 function initializeDashboard(backendData) {
     if (backendData.charts) renderCharts(backendData.charts);
     
-    // 1. Store and render the full dataset (no pagination)
     if (backendData.table_data) {
         currentTableData = backendData.table_data;
         renderTable();
     }
     
-    // 2. Update KPI Cards with en-IN formatting
     if (backendData.metrics) {
         const formatMoney = (num) => '₹' + num.toLocaleString('en-IN', { 
             minimumFractionDigits: 0, 
@@ -124,7 +121,8 @@ function initializeDashboard(backendData) {
 }
 
 function renderCharts(charts) {
-    const baseUrl = "http://127.0.0.1:5000/";
+    // FIXED: Changed to Production URL to fetch live images
+    const baseUrl = "https://veriturn-backend.onrender.com/"; 
     const timestamp = Date.now();
     const scatterContainer = document.getElementById('scatterChart');
     const barContainer = document.getElementById('barChart');
@@ -142,7 +140,6 @@ function renderTable() {
     const paginationControls = document.getElementById('table-pagination-controls');
     if (!tbody || !currentTableData.length) return;
 
-    // Renders every entry in currentTableData
     tbody.innerHTML = currentTableData.map(row => `
     <tr>
       <td style="font-weight: 500;">${row.id}</td>
@@ -168,13 +165,11 @@ function renderTable() {
     </tr>
   `).join('');
 
-    // Pagination is hidden because the full list is visible
     if (paginationControls) {
         paginationControls.style.display = 'none';
     }
 }
 
-// --- Review Modal Global Functions ---
 window.openReviewModal = function(id, score, reason, policyText) {
     const modal = document.getElementById('review-modal');
     if (!modal) return;
@@ -184,7 +179,6 @@ window.openReviewModal = function(id, score, reason, policyText) {
     document.getElementById('modal-risk-fill').style.width = `${score}%`;
     document.getElementById('modal-reasoning').innerText = reason;
     
-    // Inject USP Smart Policy recommendation instead of calculated price
     const policyEl = document.getElementById('modal-policy-text');
     if (policyEl) {
         policyEl.innerText = policyText;
