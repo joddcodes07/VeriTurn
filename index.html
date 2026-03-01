@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VeriTurn - Fraud Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <nav class="glass-nav" id="main-nav">
+    <div class="logo">
+      <h2 style="color: var(--color-text); display: flex; align-items: center; gap: 8px;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+            stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <path d="M12 16L16 12L12 8" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M8 12H16" stroke="var(--color-accent)" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+        </svg>
+        VeriTurn
+      </h2>
+    </div>
+    <div class="nav-links" id="nav-actions">
+      </div>
+  </nav>
+
+  <div id="app">
+    <main id="view-landing" class="view active container">
+      <section class="hero-section">
+        <div class="hero-content">
+          <div class="badge glass-panel">AI-Powered Fraud Prevention</div>
+          <h1 class="hero-headline">Stop <span class="text-accent">Revenue Loss</span> from Fraudulent Returns.</h1>
+          <p class="hero-subhead">VeriTurn helps e-commerce companies detect, analyze, and prevent wardrobing and serial
+            returning claims instantly.</p>
+          <div class="hero-actions">
+            <button class="btn btn-primary btn-large" onclick="window.router.navigate('upload')">Analyze Your
+              Returns</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="how-it-works">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps-grid">
+          <div class="step-card glass-panel">
+            <div class="step-icon">1</div>
+            <h3>Upload CSV Data</h3>
+            <p>Securely ingest your historical return data directly from your e-commerce platform.</p>
+          </div>
+          <div class="step-card glass-panel">
+            <div class="step-icon">2</div>
+            <h3>AI Anomaly Detection</h3>
+            <p>Our proprietary models flag isolated anomalous outliers and suspicious user behavior.</p>
+          </div>
+          <div class="step-card glass-panel">
+            <div class="step-icon">3</div>
+            <h3>Prevent Losses</h3>
+            <p>Take proactive action on fraudulent claims and save millions in preventable revenue loss.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <main id="view-upload" class="view container">
+      <div class="upload-container glass-panel">
+        <div class="upload-header">
+          <h2>Data Ingestion Portal</h2>
+          <p>Upload your historical return data to generate your personalized fraud analytics dashboard.</p>
+        </div>
+
+        <form id="upload-form" class="upload-form">
+          <div class="form-group">
+            <label for="platform-name">E-commerce Platform Name</label>
+            <input type="text" id="platform-name" class="input-field" placeholder="e.g., Shopify, Flipkart, Myntra"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label>Historical Return Data (CSV)</label>
+            <div class="dropzone" id="csv-dropzone">
+              <div class="dropzone-content">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                  class="upload-icon">
+                  <path
+                    d="M21 15V19C21 19.5304 20.7893 20.0391 20.4142 20.4142C20.0391 20.7893 19.5304 21 19 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V15"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path d="M17 8L12 3L7 8" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                  <path d="M12 3V15" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                </svg>
+                <p class="dropzone-text">Drag and drop your CSV file here</p>
+                <p class="dropzone-subtext">or click to browse from your computer</p>
+                <input type="file" id="csv-file" accept=".csv" class="file-input">
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-large w-full" id="btn-generate">
+            <span class="btn-text">Generate AI Dashboard</span>
+            <span class="loader hidden"></span>
+          </button>
+        </form>
+      </div>
+    </main>
+
+    <main id="view-dashboard" class="view container">
+      <div class="dashboard-header">
+        <h2 class="section-title" style="margin-bottom: 2rem; text-align: left;">AI Fraud Intelligence Analytics</h2>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card glass-panel">
+          <h4 class="kpi-title">Avg. Returns Analyzed</h4>
+          <p class="kpi-value" id="kpi-total">0</p>
+          <p class="kpi-subtext text-safe">Per Month</p>
+        </div>
+        <div class="kpi-card glass-panel">
+          <h4 class="kpi-title">Flagged Anomalies</h4>
+          <p class="kpi-value text-risk" id="kpi-flagged">0</p>
+          <p class="kpi-subtext">Detected by AI Engine</p>
+        </div>
+        <div class="kpi-card glass-panel">
+          <h4 class="kpi-title">Est. Monthly Revenue Loss</h4>
+          <p class="kpi-value text-risk" id="kpi-loss">₹0</p>
+          <p class="kpi-subtext">Impact of high-risk claims</p>
+        </div>
+        <div class="kpi-card glass-panel">
+          <h4 class="kpi-title">Monthly Preventable Loss</h4>
+          <p class="kpi-value text-safe" id="kpi-prevented">₹0</p>
+          <p class="kpi-subtext">Actionable savings via VeriTurn</p>
+        </div>
+      </div>
+
+      <div class="charts-grid">
+        <div class="chart-container glass-panel">
+          <h3>Anomaly Clustering (Behavior vs Rate)</h3>
+          <div class="canvas-wrapper" id="scatterChart"></div>
+        </div>
+        <div class="chart-container glass-panel">
+          <h3>Risk Level Distribution</h3>
+          <div class="canvas-wrapper" id="barChart"></div>
+        </div>
+      </div>
+
+      <div class="table-container glass-panel">
+        <div class="table-header">
+          <h3>Flagged Intelligence Report</h3>
+          <button class="btn" 
+                  style="border: 1px solid var(--color-divider); background: transparent;" 
+                  onclick="window.location.href='http://127.0.0.1:5000/download-report'">
+            Export CSV
+          </button>
+        </div>
+        <div class="table-responsive">
+          <table class="intelligence-table">
+            <thead>
+              <tr>
+                <th>User ID</th>
+                <th>Item Price</th>
+                <th>Return Window (Days)</th>
+                <th>Anomaly Score</th>
+                <th>Status</th>
+                <th>AI Reasoning</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+                </tbody>
+          </table>
+        </div>
+
+        <div class="table-pagination" id="table-pagination-controls" style="display: none;">
+          <span id="pagination-info"></span>
+          <div class="pagination-controls">
+            <button id="prev-page"></button>
+            <button id="next-page"></button>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="review-modal" class="modal-overlay hidden">
+    <div class="modal-content glass-panel">
+      <div class="modal-header">
+        <h2 id="modal-user-id">Reviewing User</h2>
+        <button class="close-btn" onclick="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="risk-meter-container">
+          <label>AI Confidence Score</label>
+          <div class="large-risk-bar">
+            <div id="modal-risk-fill" class="risk-fill"></div>
+          </div>
+          <h1 id="modal-risk-score">0</h1>
+        </div>
+        <div class="insight-grid">
+          <div class="insight-item">
+            <small>Behavioral Tag</small>
+            <p id="modal-tag">Loading...</p>
+          </div>
+          <div class="insight-item">
+            <small>Recommendation</small>
+            <p id="modal-action">Flag for manual audit</p>
+          </div>
+        </div>
+        <p class="ai-note"><strong>AI Analysis:</strong> <span id="modal-reasoning"></span></p>
+
+        <div class="policy-box glass-panel" style="background: #f0f7ff; border: 1px solid #bae1ff; padding: 1.25rem; border-radius: 12px; margin-top: 1.5rem;">
+          <h4 style="color: #0056b3; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px;">
+            🛡️ VeriTurn Protection Policy
+          </h4>
+          <p id="modal-policy-text" style="font-size: 0.95rem; font-weight: 600; color: #004085; line-height: 1.4;">
+            Apply 5% Risk Premium surcharge on next transaction value.
+          </p>
+          <p style="font-size: 0.75rem; color: #4b5563; margin-top: 10px; font-style: italic; line-height: 1.4;">
+            *Policy recommended to mitigate high-risk return patterns and preserve operational margins for future purchases.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="./main.js"></script>
+</body>
+
+</html>

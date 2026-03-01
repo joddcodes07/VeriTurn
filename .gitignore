@@ -1,18 +1,24 @@
-# Python Virtual Environment (DO NOT UPLOAD THIS)
-venv/
-env/
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# Python Cache Files
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+node_modules
+dist
+dist-ssr
+*.local
 
-# Environment Variables (Keep your secrets safe later)
-.env
-
-# macOS System Files
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-
-# (Optional) If you add a database file later, ignore it so you don't overwrite it on GitHub
-*.sqlite3
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
