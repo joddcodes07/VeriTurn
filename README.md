@@ -74,6 +74,7 @@
 * **Live Demo Link:** *(TBD)*
 * **Demo Video Link:** *(TBD)*
 * **GitHub Repository:** *(Link will be added upon submission)*
+* **Powerpoint Presentation Link (Google Drive Link)** https://drive.google.com/drive/folders/1Mh4FpW-31sVmxKNWG-h2_pfO0j8U1kwJ?usp=drive_link 
 
 ## 13. Hackathon Deliverables Summary
 * [x] Checkpoint 1 README
