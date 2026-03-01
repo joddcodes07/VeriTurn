@@ -71,9 +71,10 @@
 5. Dashboard updates to show High, Medium, and Low-risk customers.
 
 ## 12. Demo & Video
-* **Live Demo Link:** *(TBD)*
+* **Live Demo Link:** https://veri-turn.vercel.app/
 * **Demo Video Link:** *(TBD)*
-* **GitHub Repository:** *(Link will be added upon submission)*
+* **GitHub Repository:** https://github.com/joddcodes07/VeriTurn.git
+* **Powerpoint Presentation Link (Google Drive Link)** https://drive.google.com/drive/folders/1Mh4FpW-31sVmxKNWG-h2_pfO0j8U1kwJ?usp=drive_link
 
 ## 13. Hackathon Deliverables Summary
 * [x] Checkpoint 1 README
